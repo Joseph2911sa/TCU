@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADECO · Sistema de Gestión Comunitaria</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       PANTALLA DE LOGIN
+  ════════════════════════════════════════════ -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="login-emblem">
+        <div class="leaf-icon">🌿</div>
+        <h1>ADECO</h1>
+        <p>Sistema de Gestión Comunitaria</p>
+      </div>
+      <div class="form-group">
+        <label>Usuario</label>
+        <input type="text" class="form-control" id="login-user" placeholder="admin" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" class="form-control" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+        <div class="error-msg" id="login-error">Usuario o contraseña incorrectos.</div>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Ingresar al sistema</button>
+      <p class="login-hint">Demo: usuario <strong>admin</strong> / contraseña <strong>1234</strong></p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       APLICACIÓN PRINCIPAL
+  ════════════════════════════════════════════ -->
+  <div id="app">
+
+    <!-- Botón menú móvil -->
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Barra lateral -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-leaf">🌿</div>
+          <div class="brand-text">
+            <h2>ADECO</h2>
+            <span>Gestión Comunal</span>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-nav">
+        <button class="nav-item active" onclick="showPage('dashboard', this)">
+          <span class="icon">🏠</span> Dashboard
+        </button>
+        <button class="nav-item" onclick="showPage('finanzas', this)">
+          <span class="icon">💰</span> Finanzas
+        </button>
+        <button class="nav-item" onclick="showPage('salon', this)">
+          <span class="icon">🏛️</span> Salón Comunal
+        </button>
+      </div>
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="logout()">⎋ Cerrar sesión</button>
+      </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h1>Bienvenido 👋</h1>
+          <p>Resumen general de la asociación</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card income">
+            <div class="stat-icon">📈</div>
+            <div class="stat-label">Total Ingresos</div>
+            <div class="stat-value positive" id="dash-ingresos">₡0</div>
+          </div>
+          <div class="stat-card expense">
+            <div class="stat-icon">📉</div>
+            <div class="stat-label">Total Egresos</div>
+            <div class="stat-value negative" id="dash-egresos">₡0</div>
+          </div>
+          <div class="stat-card balance">
+            <div class="stat-icon">⚖️</div>
+            <div class="stat-label">Balance Actual</div>
+            <div class="stat-value" id="dash-balance">₡0</div>
+          </div>
+          <div class="stat-card reservas">
+            <div class="stat-icon">📅</div>
+            <div class="stat-label">Reservas Activas</div>
+            <div class="stat-value" id="dash-reservas" style="color:var(--sky)">0</div>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button class="quick-btn" onclick="showPage('finanzas', null); openFinanzaModal()">
+            <span class="icon">➕</span> Nueva Transacción
+          </button>
+          <button class="quick-btn" onclick="showPage('salon', null); openReservaModal()">
+            <span class="icon">📋</span> Nueva Reserva
+          </button>
+        </div>
+        <div class="recent-section">
+          <h2>Últimas transacciones</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th><th>Tipo</th><th>Categoría</th><th>Descripción</th><th>Monto</th>
+                </tr>
+              </thead>
+              <tbody id="dash-recent-tbody">
+                <tr><td colspan="5" class="empty-state">No hay transacciones aún</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÓDULO FINANCIERO -->
+      <div class="page" id="page-finanzas">
+        <div class="page-header">
+          <h1>Módulo Financiero</h1>
+          <p>Registro y consulta de ingresos y egresos</p>
+        </div>
+        <div style="margin-bottom:1.25rem">
+          <button class="btn-submit" onclick="openFinanzaModal()">➕ Nueva Transacción</button>
+        </div>
+        <div class="table-wrapper">
+          <div class="table-header">
+            <span class="table-title">Historial de Transacciones</span>
+            <div class="filters">
+              <select class="filter-select" id="filter-tipo" onchange="renderFinanzas()">
+                <option value="">Todos los tipos</option>
+                <option value="Ingreso">Ingresos</option>
+                <option value="Egreso">Egresos</option>
+              </select>
+              <select class="filter-select" id="filter-mes" onchange="renderFinanzas()">
+                <option value="">Todos los meses</option>
+                <option value="01">Enero</option>
+                <option value="02">Febrero</option>
+                <option value="03">Marzo</option>
+                <option value="04">Abril</option>
+                <option value="05">Mayo</option>
+                <option value="06">Junio</option>
+                <option value="07">Julio</option>
+                <option value="08">Agosto</option>
+                <option value="09">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+              </select>
+              <select class="filter-select" id="filter-anio" onchange="renderFinanzas()">
+                <option value="">Todos los años</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+              </select>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th><th>Tipo</th><th>Categoría</th><th>Descripción</th><th>Monto</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="finanzas-tbody">
+              <tr><td colspan="6" class="empty-state">No hay transacciones registradas</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MÓDULO SALÓN COMUNAL -->
+      <div class="page" id="page-salon">
+        <div class="page-header">
+          <h1>Salón Comunal</h1>
+          <p>Gestión de reservas y disponibilidad</p>
+        </div>
+        <div style="margin-bottom:1.25rem">
+          <button class="btn-submit" onclick="openReservaModal()">📋 Nueva Reserva</button>
+        </div>
+        <div class="table-wrapper">
+          <div class="table-header">
+            <span class="table-title">Reservas del Salón</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th><th>Responsable</th><th>Teléfono</th><th>Tipo de Actividad</th><th>Estado</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="salon-tbody">
+              <tr><td colspan="6" class="empty-state">No hay reservas registradas</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MODAL: NUEVA / EDITAR TRANSACCIÓN
+  ════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-finanza">
+    <div class="modal">
+      <h3 id="modal-finanza-title">Nueva Transacción</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Fecha *</label>
+          <input type="date" class="form-control" id="f-fecha">
+        </div>
+        <div class="form-group">
+          <label>Tipo *</label>
+          <select class="form-control" id="f-tipo">
+            <option value="">Seleccionar...</option>
+            <option value="Ingreso">Ingreso</option>
+            <option value="Egreso">Egreso</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Categoría *</label>
+          <select class="form-control" id="f-categoria">
+            <option value="">Seleccionar...</option>
+            <option>Cuotas</option>
+            <option>Donaciones</option>
+            <option>Alquiler salón</option>
+            <option>Actividades</option>
+            <option>Servicios públicos</option>
+            <option>Mantenimiento</option>
+            <option>Materiales</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Monto (₡) *</label>
+          <input type="number" class="form-control" id="f-monto" placeholder="0" min="1">
+        </div>
+        <div class="form-group full-width">
+          <label>Descripción</label>
+          <input type="text" class="form-control" id="f-descripcion" placeholder="Descripción del movimiento">
+        </div>
+      </div>
+      <input type="hidden" id="f-edit-id">
+      <div class="form-actions">
+        <button class="btn-submit" onclick="saveFinanza()">Guardar</button>
+        <button class="btn-cancel" onclick="closeModal('modal-finanza')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MODAL: NUEVA / EDITAR RESERVA
+  ════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-reserva">
+    <div class="modal">
+      <h3 id="modal-reserva-title">Nueva Reserva</h3>
+      <div id="avail-status"></div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Fecha del evento *</label>
+          <input type="date" class="form-control" id="r-fecha" onchange="checkAvailability()">
+        </div>
+        <div class="form-group">
+          <label>Estado *</label>
+          <select class="form-control" id="r-estado">
+            <option value="Confirmada">Confirmada</option>
+            <option value="Pendiente">Pendiente</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nombre del responsable *</label>
+          <input type="text" class="form-control" id="r-nombre" placeholder="Nombre completo">
+        </div>
+        <div class="form-group">
+          <label>Teléfono *</label>
+          <input type="tel" class="form-control" id="r-telefono" placeholder="8888-8888">
+        </div>
+        <div class="form-group full-width">
+          <label>Tipo de actividad *</label>
+          <select class="form-control" id="r-actividad">
+            <option value="">Seleccionar...</option>
+            <option>Reunión comunal</option>
+            <option>Actividad deportiva</option>
+            <option>Celebración</option>
+            <option>Capacitación</option>
+            <option>Votación</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <input type="hidden" id="r-edit-id">
+      <div class="form-actions">
+        <button class="btn-submit" onclick="saveReserva()">Guardar</button>
+        <button class="btn-cancel" onclick="closeModal('modal-reserva')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor de notificaciones -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ═══════════════════════════════════════════
+       SCRIPTS (orden de carga importa)
+  ════════════════════════════════════════════ -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/finanzas.js"></script>
+  <script src="js/reservas.js"></script>
+
+</body>
+</html>
