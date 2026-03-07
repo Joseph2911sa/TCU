@@ -70,17 +70,11 @@ body {
   gap: 0.5rem;
 }
 
-.login-emblem .leaf-icon {
-  width: 52px;
-  height: 52px;
-  background: var(--forest);
-  border-radius: 50% 12px 50% 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  margin-bottom: 0.5rem;
-  transform: rotate(-12deg);
+.login-emblem .leaf-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:0.5rem;
 }
 
 .login-emblem h1 {
@@ -283,17 +277,11 @@ body {
   gap: 0.75rem;
 }
 
-.brand-leaf {
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50% 8px 50% 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  transform: rotate(-12deg);
-  flex-shrink: 0;
+.brand-leaf{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
 }
 
 .brand-text h2 {
@@ -714,4 +702,16 @@ tr:hover td      { background: rgba(74, 140, 92, 0.03); }
   .main-content        { margin-left: 0; padding: 1rem; padding-top: 4rem; }
   .menu-toggle         { display: flex; }
   .stat-value          { font-size: 1.5rem; }
+}
+
+.leaf-icon img{
+  width:200px;
+  height:auto;
+  object-fit:contain;
+}
+
+.brand-leaf img{
+    width:70px;
+    height:auto;
+    object-fit:contain;
 }
