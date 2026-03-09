@@ -18,44 +18,7 @@ const calState = {
 };
 
 /** Actividades de ejemplo (se muestran cuando no hay datos reales) */
-const SAMPLE_ACTIVITIES = [
-  {
-    tipo: '🎲 Comunitario',
-    color: '#c9a84c',
-    titulo: 'Gran Bingo Comunitario',
-    descripcion: 'Actividad para recaudar fondos para proyectos de la comunidad. Habrá premios y venta de comidas.',
-    fecha: '30/03/2026',
-    hora: '6:00 p.m.',
-    lugar: 'Salón Comunal',
-  },
-  {
-    tipo: '⚽ Deportivo',
-    color: '#c45c3a',
-    titulo: 'Partidos Deportivos Comunitarios',
-    descripcion: 'Encuentros deportivos entre equipos de la comunidad durante el último fin de semana de marzo.',
-    fecha: '28/03/2026',
-    hora: '2:00 p.m.',
-    lugar: 'Plaza de deportes',
-  },
-  {
-    tipo: '⚽ Deportivo',
-    color: '#c45c3a',
-    titulo: 'Partidos Deportivos Comunitarios',
-    descripcion: 'Continuación de la jornada deportiva comunitaria.',
-    fecha: '29/03/2026',
-    hora: '2:00 p.m.',
-    lugar: 'Plaza de deportes',
-  },
-  {
-    tipo: '📋 Reunión',
-    color: '#4a8c5c',
-    titulo: 'Reunión de Junta Directiva',
-    descripcion: 'Sesión ordinaria de la junta directiva para revisar proyectos comunitarios.',
-    fecha: obtenerFechaRelativa(10),
-    hora: '7:00 p.m.',
-    lugar: 'Oficina de la Asociación',
-  },
-];
+const actividades = JSON.parse(localStorage.getItem("actividades")) || [];
 
 /* ════════════════════════════════════════════
    UTILIDADES
@@ -316,20 +279,38 @@ function renderActividades() {
   const grid = document.getElementById('activities-grid');
   if (!grid) return;
 
-  grid.innerHTML = SAMPLE_ACTIVITIES.map(act => `
-    <div class="activity-card" style="--activity-color: ${act.color}">
-      <div class="activity-type" style="background: ${act.color}1a; color: ${act.color}">
-        ${act.tipo}
+  // Leer actividades desde localStorage (guardadas desde el panel admin)
+  const actsData = JSON.parse(localStorage.getItem("actividades")) || [];
+
+  if (!actsData.length) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light);">
+        <p>📅 No hay actividades programadas en este momento.</p>
       </div>
-      <h4>${act.titulo}</h4>
-      <p>${act.descripcion}</p>
-      <div class="activity-meta">
-        <span>📅 ${act.fecha}</span>
-        <span>🕐 ${act.hora}</span>
-        <span>📍 ${act.lugar}</span>
+    `;
+    return;
+  }
+
+  grid.innerHTML = actsData.map((act, idx) => {
+    // Color aleatorio si no está definido
+    const colors = ['#4a8c5c', '#5b8fb9', '#c9a84c', '#c45c3a'];
+    const color = act.color || colors[idx % colors.length];
+
+    return `
+      <div class="activity-card" style="--activity-color: ${color}">
+        <div class="activity-type" style="background: ${color}1a; color: ${color}">
+          ${act.tipo || '📢 Actividad'}
+        </div>
+        <h4>${act.titulo}</h4>
+        <p>${act.descripcion || 'Sin descripción'}</p>
+        <div class="activity-meta">
+          <span>📅 ${formatDate(act.fecha)}</span>
+          <span>🕐 ${act.hora || '—'}</span>
+          <span>📍 ${act.lugar || '—'}</span>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 /* ════════════════════════════════════════════
@@ -478,14 +459,16 @@ function init() {
 
   // Escuchar cambios de storage en otras pestañas (panel admin abierto)
   window.addEventListener('storage', (e) => {
-    if (e.key === 'adeco_reservas' || e.key === 'adeco_finanzas') {
+    if (e.key === 'adeco_reservas' || e.key === 'adeco_finanzas' || e.key === 'actividades') {
       renderHeroStats();
       renderTablaReservas();
       renderCalendario();
+      renderActividades();
       renderFinanzas();
     }
   });
 }
 
 // Ejecutar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', init);
 document.addEventListener('DOMContentLoaded', init);

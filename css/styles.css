@@ -618,6 +618,36 @@ tr:hover td      { background: rgba(74, 140, 92, 0.03); }
   margin-bottom: 1.5rem;
 }
 
+/* ─── MODAL DE CONFIRMACIÓN ─── */
+.modal-confirm {
+  max-width: 380px;
+  text-align: center;
+  padding: 2.5rem 2rem;
+}
+
+.confirm-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.modal-confirm h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.modal-confirm p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.modal-confirm .form-actions {
+  justify-content: center;
+  gap: 0.75rem;
+}
+
 /* ─── DISPONIBILIDAD RESERVA ─── */
 .reserva-availability {
   display: inline-flex;

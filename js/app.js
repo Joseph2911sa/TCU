@@ -26,6 +26,9 @@ window.showPage = function (name, btn) {
 
   if (name === 'dashboard' && typeof window.updateDashboard === "function") {
     window.updateDashboard();
+  } else if (name === 'actividades' && typeof window.renderActividadesAdmin === "function") {
+    // reload tabla administrativa cuando se navega a la pestaña
+    window.renderActividadesAdmin();
   }
 };
 

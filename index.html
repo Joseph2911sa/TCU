@@ -49,6 +49,7 @@
 
     <!-- Barra lateral -->
     <nav class="sidebar" id="sidebar">
+      
       <div class="sidebar-header">
         <div class="brand">
           <div class="brand-leaf">
@@ -70,6 +71,9 @@
         <button class="nav-item" onclick="showPage('salon', this)">
           <span class="icon">🏛️</span> Salón Comunal
         </button>
+        <button class="nav-item" onclick="showPage('actividades', this)">
+        <span class="icon">📢</span> Actividades
+</button>
       </div>
       <div class="sidebar-footer">
         <button class="btn-logout" onclick="logout()">⎋ Cerrar sesión</button>
@@ -212,6 +216,37 @@
         </div>
       </div>
 
+    <!-- MÓDULO ACTIVIDADES -->
+      <div class="page" id="page-actividades">
+        <div class="page-header">
+          <h1>Actividades Comunitarias</h1>
+          <p>Gestión de actividades del portal público</p>
+        </div>
+
+        <div style="margin-bottom:1.25rem">
+          <button class="btn-submit" onclick="openActividadModal()">
+            ➕ Nueva Actividad
+          </button>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Título</th>
+                <th>Lugar</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="actividades-tbody">
+              <tr>
+                <td colspan="4" class="empty-state">No hay actividades registradas</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -313,6 +348,64 @@
     </div>
   </div>
 
+<!-- ═══════════════════════════════════════════
+       MODAL: ACTIVIDADES
+  ════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-actividad">
+  <div class="modal">
+    <h3>Nueva Actividad</h3>
+    <input type="hidden" id="a-edit-id">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Título *</label>
+        <input type="text" class="form-control" id="a-titulo">
+      </div>
+
+      <div class="form-group">
+        <label>Fecha *</label>
+        <input type="date" class="form-control" id="a-fecha">
+      </div>
+
+      <div class="form-group">
+        <label>Hora *</label>
+        <input type="time" class="form-control" id="a-hora">
+      </div>
+
+      <div class="form-group">
+        <label>Lugar *</label>
+        <input type="text" class="form-control" id="a-lugar">
+      </div>
+
+      <div class="form-group full-width">
+        <label>Descripción</label>
+        <textarea class="form-control" id="a-descripcion"></textarea>
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-submit" onclick="saveActividad()">Guardar</button>
+      <button class="btn-cancel" onclick="closeModal('modal-actividad')">Cancelar</button>
+    </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIRMACIÓN DE ELIMINACIÓN -->
+  <div class="modal-overlay" id="modal-confirm-delete">
+    <div class="modal modal-confirm">
+      <div class="confirm-icon">⚠️</div>
+      <h3>Confirmar eliminación</h3>
+      <p id="confirm-message">¿Está seguro de que desea eliminar esta actividad?</p>
+      <div class="form-actions">
+        <button class="btn-submit" onclick="confirmDelete()">Eliminar</button>
+        <button class="btn-cancel" onclick="closeModal('modal-confirm-delete')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Contenedor de notificaciones -->
   <div class="toast-container" id="toast-container"></div>
 
@@ -324,6 +417,6 @@
   <script src="js/auth.js"></script>
   <script src="js/finanzas.js"></script>
   <script src="js/reservas.js"></script>
-
+  <script src="js/actividades.js"></script>
 </body>
 </html>
