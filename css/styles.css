@@ -715,3 +715,20 @@ tr:hover td      { background: rgba(74, 140, 92, 0.03); }
     height:auto;
     object-fit:contain;
 }
+
+.btn-secondary{
+  display:block;
+  text-align:center;
+  margin-top:10px;
+  padding:10px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:500;
+  background:#f1f1f1;
+  color:#333;
+  transition:0.2s;
+}
+
+.btn-secondary:hover{
+  background:#e4e4e4;
+}
