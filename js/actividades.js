@@ -132,49 +132,29 @@ function renderActividadesAdmin() {
       <td>${a.titulo}</td>
       <td>${a.lugar}</td>
       <td>
-        <button class="btn-small btn-edit" data-id="${actId}" title="Editar">✏️</button>
-        <button class="btn-small btn-delete" data-id="${actId}" title="Eliminar">🗑️</button>
+        <div class="action-btns">
+          <button class="btn-sm edit"
+            onclick="openActividadModal('${actId}')">
+            ✏️ Editar
+          </button>
+          <button class="btn-sm delete"
+            onclick="deleteActividad('${actId}')">
+            🗑️ Borrar
+          </button>
+        </div>
       </td>
     </tr>
   `;
   }).join('');
-
-  // Agregar event listeners a los botones
-  document.querySelectorAll('.btn-edit').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const id = this.getAttribute('data-id');
-      openActividadModal(id);
-    });
-  });
-
-  document.querySelectorAll('.btn-delete').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const id = this.getAttribute('data-id');
-      deleteActividad(id);
-    });
-  });
 }
 
 window.deleteActividad = function(id) {
-  // Guardar el ID para usarlo en confirmDelete()
-  window.pendingDeleteId = id;
-  // Mostrar el modal de confirmación
-  document.getElementById('modal-confirm-delete').classList.add('open');
-};
-
-window.confirmDelete = function() {
-  const id = window.pendingDeleteId;
-  
-  if (!id) {
-    return;
+  if (!confirm('¿Está seguro de que desea eliminar esta actividad?')) {
+    return; // Usuario canceló
   }
   
   const acts = getActividades();
   const filtered = acts.filter(a => a.id !== id);
-  
   localStorage.setItem("actividades", JSON.stringify(filtered));
-  
-  document.getElementById('modal-confirm-delete').classList.remove('open');
   renderActividadesAdmin();
-  window.pendingDeleteId = null;
 };

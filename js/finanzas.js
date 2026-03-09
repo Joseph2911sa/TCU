@@ -141,8 +141,14 @@ window.renderFinanzas = function () {
       <td>${t.descripcion || '—'}</td>
       <td>${window.fmtMoney(t.monto)}</td>
       <td>
-        <button onclick="openFinanzaModal('${t.id}')">Editar</button>
-        <button onclick="deleteFinanza('${t.id}')">Borrar</button>
+        <div class="action-btns">
+          <button class="btn-sm edit" onclick="openFinanzaModal('${t.id}')">
+            ✏️ Editar
+          </button>
+          <button class="btn-sm delete" onclick="deleteFinanza('${t.id}')">
+            🗑️ Borrar
+          </button>
+        </div>
       </td>
     </tr>
   `).join('');
