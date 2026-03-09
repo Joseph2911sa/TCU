@@ -1078,6 +1078,12 @@ body.public-portal {
   justify-content: center;
 }
 
+.footer-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
 .footer-logo-wrap strong {
   display: block;
   font-family: var(--pub-font-display);
@@ -1197,4 +1203,22 @@ body.public-portal {
   .salon-info-grid { grid-template-columns: 1fr; }
   .about-cards     { grid-template-columns: 1fr; }
   .finanzas-stats  { grid-template-columns: 1fr; }
+}
+
+.gallery-item img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.gallery-caption{
+  position:absolute;
+  bottom:10px;
+  left:10px;
+  background:rgba(0,0,0,0.6);
+  color:white;
+  padding:6px 10px;
+  border-radius:6px;
+  font-size:14px;
 }
