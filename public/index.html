@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asociación de Desarrollo Integral · Portal Comunitario</title>
+  <meta name="description" content="Portal público de información comunitaria. Consulte reservas del salón, actividades, finanzas y más.">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="css/public.css">
+</head>
+<body class="public-portal">
+
+  <!-- ══════════════════════════════════════
+       BARRA DE NAVEGACIÓN STICKY
+  ═══════════════════════════════════════ -->
+  <header class="pub-header" id="pub-header">
+    <div class="pub-nav-inner">
+      <div class="pub-brand">
+        <div class="pub-logo-wrap">
+          <img src="../assets/img/logo.png" alt="Logo ADECO" class="pub-logo"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <div class="pub-logo-fallback" style="display:none">🌿</div>
+        </div>
+        <div class="pub-brand-text">
+          <span class="pub-brand-name">ADECO</span>
+          <span class="pub-brand-sub">Asociación de Desarrollo Integral</span>
+        </div>
+      </div>
+      <nav class="pub-nav" id="pub-nav">
+        <a href="#inicio"    class="pub-nav-link active">Inicio</a>
+        <a href="#reservas"  class="pub-nav-link">Reservas</a>
+        <a href="#actividades" class="pub-nav-link">Actividades</a>
+        <a href="#finanzas"  class="pub-nav-link">Finanzas</a>
+        <a href="#contacto"  class="pub-nav-link">Contacto</a>
+        <a href="../index.html" class="pub-nav-admin" target="_blank" title="Acceso al sistema administrativo">
+          🔐 Admin
+        </a>
+      </nav>
+      <button class="pub-hamburger" id="pub-hamburger" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       HERO / INICIO
+  ═══════════════════════════════════════ -->
+  <section class="pub-hero" id="inicio">
+    <div class="pub-hero-bg">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+      <svg class="hero-wave" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,60 C240,100 480,20 720,60 C960,100 1200,20 1440,60 L1440,120 L0,120 Z"/>
+      </svg>
+    </div>
+    <div class="pub-container pub-hero-content">
+      <div class="hero-badge">🌿 Portal Comunitario</div>
+      <h1 class="hero-title">
+        Asociación de<br>
+        <em>Desarrollo Integral</em>
+      </h1>
+      <p class="hero-subtitle">Sistema de Información Comunitaria</p>
+      <p class="hero-desc">
+        Transparencia, organización y servicio para todos los vecinos de nuestra comunidad.
+        Consulte reservas, actividades y el estado financiero de su asociación.
+      </p>
+      <div class="hero-actions">
+        <a href="#reservas" class="pub-btn pub-btn-primary">Ver Reservas del Salón</a>
+        <a href="#actividades" class="pub-btn pub-btn-ghost">Próximas Actividades</a>
+      </div>
+      <div class="hero-stats" id="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-val" id="hs-ingresos">₡0</span>
+          <span class="hero-stat-label">Ingresos totales</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-val" id="hs-reservas">0</span>
+          <span class="hero-stat-label">Reservas activas</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-val" id="hs-balance">₡0</span>
+          <span class="hero-stat-label">Balance actual</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SOBRE LA ASOCIACIÓN
+  ═══════════════════════════════════════ -->
+  <section class="pub-section pub-about" id="sobre">
+    <div class="pub-container">
+      <div class="pub-section-header">
+        <span class="section-eyebrow">Nuestra organización</span>
+        <h2 class="section-title">Sobre la Asociación</h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-main">
+          <p class="about-intro">
+            La Asociación de Desarrollo Integral es una organización sin fines de lucro
+            constituida al amparo de la Ley 218 de Costa Rica, cuya finalidad es promover
+            el bienestar y el progreso de todos los habitantes de la comunidad.
+          </p>
+          <p class="about-body">
+            Trabajamos en coordinación con instituciones del Estado, municipalidades y
+            organizaciones civiles para gestionar proyectos de infraestructura, salud,
+            educación y cultura que mejoren la calidad de vida de nuestros vecinos.
+          </p>
+        </div>
+        <div class="about-cards">
+          <div class="about-card">
+            <div class="about-card-icon">🎯</div>
+            <h3>Misión</h3>
+            <p>Promover el desarrollo integral de la comunidad mediante la gestión transparente
+               de recursos, la organización de actividades y la representación de los intereses
+               de todos sus habitantes.</p>
+          </div>
+          <div class="about-card">
+            <div class="about-card-icon">🔭</div>
+            <h3>Visión</h3>
+            <p>Ser una asociación modelo en Costa Rica, reconocida por su transparencia,
+               participación ciudadana y capacidad de transformar positivamente el entorno
+               comunitario con proyectos sostenibles.</p>
+          </div>
+          <div class="about-card">
+            <div class="about-card-icon">⚖️</div>
+            <h3>Valores</h3>
+            <p>Transparencia, solidaridad, participación democrática, responsabilidad social
+               y compromiso con el desarrollo sostenible de nuestra comunidad.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       RESERVAS DEL SALÓN
+  ═══════════════════════════════════════ -->
+  <section class="pub-section pub-reservas-section" id="reservas">
+    <div class="pub-container">
+      <div class="pub-section-header">
+        <span class="section-eyebrow">Salón Comunal</span>
+        <h2 class="section-title">Reservas Confirmadas</h2>
+        <p class="section-desc">
+          Consulte la disponibilidad del salón para planificar su actividad.
+          Para solicitar una reserva comuníquese con la directiva.
+        </p>
+      </div>
+
+      <div class="reservas-layout">
+        <!-- Tabla de reservas -->
+        <div class="reservas-table-wrap">
+          <div class="pub-card">
+            <div class="pub-card-header">
+              <h3>📋 Próximas Reservas</h3>
+              <span class="reservas-count" id="reservas-count">0 reservas</span>
+            </div>
+            <div class="pub-table-wrapper">
+              <table class="pub-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Actividad</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="pub-reservas-tbody">
+                  <tr>
+                    <td colspan="3" class="pub-empty">
+                      <span>📅</span>
+                      <p>No hay reservas confirmadas próximamente.</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendario -->
+        <div class="reservas-calendar-wrap">
+          <div class="pub-card">
+            <div class="pub-card-header">
+              <h3>🗓️ Calendario</h3>
+              <div class="cal-nav">
+                <button class="cal-nav-btn" id="cal-prev">‹</button>
+                <span class="cal-month-label" id="cal-month-label">—</span>
+                <button class="cal-nav-btn" id="cal-next">›</button>
+              </div>
+            </div>
+            <div id="pub-calendar" class="pub-calendar"></div>
+            <div class="cal-legend">
+              <span class="cal-legend-item"><span class="cal-dot cal-dot-reserved"></span>Reservado</span>
+              <span class="cal-legend-item"><span class="cal-dot cal-dot-today"></span>Hoy</span>
+              <span class="cal-legend-item"><span class="cal-dot cal-dot-free"></span>Disponible</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info del salón -->
+      <div class="salon-info-grid">
+        <div class="salon-info-card">
+          <div class="salon-info-icon">👥</div>
+          <h4>Capacidad</h4>
+          <p>Hasta <strong>80 personas</strong> sentadas o 120 de pie. Ideal para reuniones, celebraciones y capacitaciones.</p>
+        </div>
+        <div class="salon-info-card">
+          <div class="salon-info-icon">📜</div>
+          <h4>Reglas de uso</h4>
+          <p>Se prohíbe el consumo de licor sin autorización. El salón debe entregarse limpio. No se permite música después de las 11 p.m.</p>
+        </div>
+        <div class="salon-info-card">
+          <div class="salon-info-icon">📱</div>
+          <h4>¿Cómo reservar?</h4>
+          <p>Contáctenos con al menos <strong>5 días de anticipación</strong>. La reserva se confirma tras coordinar con la directiva y pagar el depósito.</p>
+        </div>
+        <div class="salon-info-card">
+          <div class="salon-info-icon">⏰</div>
+          <h4>Horario</h4>
+          <p>Disponible de <strong>7:00 a.m. a 10:00 p.m.</strong> Solicitudes especiales de horario se evalúan caso a caso.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ACTIVIDADES COMUNITARIAS
+  ═══════════════════════════════════════ -->
+  <section class="pub-section pub-activities-section" id="actividades">
+    <div class="pub-container">
+      <div class="pub-section-header">
+        <span class="section-eyebrow">Vida comunal</span>
+        <h2 class="section-title">Actividades Comunitarias</h2>
+        <p class="section-desc">Entérese de los próximos eventos, reuniones y capacitaciones de la asociación.</p>
+      </div>
+      <div class="activities-grid" id="activities-grid">
+        <!-- Renderizado por JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       RESUMEN FINANCIERO PÚBLICO
+  ═══════════════════════════════════════ -->
+  <section class="pub-section pub-finanzas-section" id="finanzas">
+    <div class="pub-container">
+      <div class="pub-section-header">
+        <span class="section-eyebrow">Transparencia</span>
+        <h2 class="section-title">Información Financiera</h2>
+        <p class="section-desc">
+          La asociación publica un resumen de sus finanzas en cumplimiento del principio de transparencia.
+          Para más detalles, asista a la asamblea general.
+        </p>
+      </div>
+      <div class="finanzas-stats">
+        <div class="fin-stat-card fin-income">
+          <div class="fin-stat-icon">📈</div>
+          <div class="fin-stat-info">
+            <span class="fin-stat-label">Total Ingresos</span>
+            <span class="fin-stat-value" id="pub-ingresos">₡0</span>
+          </div>
+        </div>
+        <div class="fin-stat-card fin-expense">
+          <div class="fin-stat-icon">📉</div>
+          <div class="fin-stat-info">
+            <span class="fin-stat-label">Total Egresos</span>
+            <span class="fin-stat-value" id="pub-egresos">₡0</span>
+          </div>
+        </div>
+        <div class="fin-stat-card fin-balance">
+          <div class="fin-stat-icon">⚖️</div>
+          <div class="fin-stat-info">
+            <span class="fin-stat-label">Balance Actual</span>
+            <span class="fin-stat-value" id="pub-balance">₡0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="finanzas-breakdown pub-card" style="margin-top:2rem">
+        <div class="pub-card-header">
+          <h3>📊 Movimientos recientes</h3>
+        </div>
+        <div class="pub-table-wrapper">
+          <table class="pub-table">
+            <thead>
+              <tr><th>Fecha</th><th>Tipo</th><th>Categoría</th><th>Monto</th></tr>
+            </thead>
+            <tbody id="pub-finanzas-tbody">
+              <tr><td colspan="4" class="pub-empty"><span>💰</span><p>No hay datos financieros disponibles.</p></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       GALERÍA
+  ═══════════════════════════════════════ -->
+  <section class="pub-section pub-gallery-section" id="galeria">
+    <div class="pub-container">
+      <div class="pub-section-header">
+        <span class="section-eyebrow">Nuestra comunidad</span>
+        <h2 class="section-title">Galería de Imágenes</h2>
+      </div>
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- Placeholders visuales mientras no hay imágenes reales -->
+        <div class="gallery-item gallery-item-tall">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,#1a3a2a,#4a8c5c)">
+            <span>🌳</span><p>Parque comunal</p>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,#2d5a3d,#7ec8a0)">
+            <span>🏛️</span><p>Salón comunal</p>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,#c9a84c,#e8c97a)">
+            <span>👨‍👩‍👧‍👦</span><p>Familias</p>
+          </div>
+        </div>
+        <div class="gallery-item gallery-item-wide">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,#5b8fb9,#1a3a2a)">
+            <span>🎉</span><p>Actividades comunales</p>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,#c45c3a,#c9a84c)">
+            <span>🌿</span><p>Áreas verdes</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       CONTACTO
+  ═══════════════════════════════════════ -->
+  <section class="pub-section pub-contact-section" id="contacto">
+    <div class="pub-container">
+      <div class="pub-section-header">
+        <span class="section-eyebrow">Comuníquese con nosotros</span>
+        <h2 class="section-title">Contacto</h2>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">📞</div>
+            <div>
+              <strong>Teléfono</strong>
+              <p>8888-0000 / 2222-0000</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">✉️</div>
+            <div>
+              <strong>Correo electrónico</strong>
+              <p>adeco.comunidad@gmail.com</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div>
+              <strong>Dirección</strong>
+              <p>Salón Comunal ADECO, frente al parque central, Costa Rica.</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">🕐</div>
+            <div>
+              <strong>Horario de atención</strong>
+              <p>Lunes a viernes: 8:00 a.m. – 5:00 p.m.</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📅</div>
+            <div>
+              <strong>Reuniones de junta directiva</strong>
+              <p>Primer jueves de cada mes, 7:00 p.m. en el salón comunal.</p>
+            </div>
+          </div>
+        </div>
+        <div class="contact-map">
+          <div class="map-placeholder">
+            <div class="map-pin">📍</div>
+            <p>Salón Comunal ADECO</p>
+            <span>Costa Rica</span>
+            <a href="https://maps.google.com" target="_blank" class="map-link">
+              Ver en Google Maps ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════ -->
+  <footer class="pub-footer">
+    <div class="pub-container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap">
+            <div class="footer-leaf">🌿</div>
+            <div>
+              <strong>ADECO</strong>
+              <span>Asociación de Desarrollo Integral</span>
+            </div>
+          </div>
+          <p class="footer-tagline">Construyendo comunidad con transparencia y compromiso.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#sobre">Sobre nosotros</a></li>
+            <li><a href="#reservas">Reservas</a></li>
+            <li><a href="#actividades">Actividades</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Sistema</h4>
+          <ul>
+            <li><a href="../index.html" target="_blank">🔐 Panel administrativo</a></li>
+            <li><a href="#finanzas">Información financiera</a></li>
+            <li><a href="#galeria">Galería</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h4>Contacto rápido</h4>
+          <p>📞 8888-0000</p>
+          <p>✉️ adeco.comunidad@gmail.com</p>
+          <p>📍 Frente al parque central</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="footer-year"></span> Asociación de Desarrollo Integral. Todos los derechos reservados.</p>
+        <p class="footer-credit">Portal comunitario desarrollado con transparencia para todos los vecinos.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/public.js"></script>
+</body>
+</html>
