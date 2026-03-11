@@ -1,28 +1,20 @@
-function getActividades() {
-  let actividades = JSON.parse(localStorage.getItem("actividades")) || [];
-  
-  // Migrar actividades antiguas que no tienen ID
-  actividades = actividades.map((act, idx) => {
-    if (!act.id) {
-      act.id = 'act_' + Date.now() + '_' + idx;
-    }
-    return act;
-  });
-  
-  // Guardar la versión migrada
-  if (actividades.some(a => !a.id)) {
-    localStorage.setItem("actividades", JSON.stringify(actividades));
+/* ═══════════════════════════════════════════════════════════════
+   ADECO · Sistema de Gestión Comunitaria
+   Archivo: js/actividades.js
+   Nuevo: ahora usa backend en lugar de localStorage
+════════════════════════════════════════════════════════════════ */
+
+// devolver lista desde el servidor
+async function getActividades() {
+  try {
+    const list = await window.api.getActividades();
+    return Array.isArray(list) ? list : [];
+  } catch (e) {
+    console.error('fetch actividades', e);
+    return [];
   }
-  
-  return actividades;
 }
 
-/**
- * Muestra el modal de creación/edición de actividad.
- * Si se pasa un ID, carga los datos existentes para edición.
- * Si no, muestra el formulario vacío para crear.
- * @param {string} [id] - ID de la actividad a editar (opcional)
- */
 function openActividadModal(id) {
   const editId = String(id || '').trim();
   document.getElementById('a-edit-id').value = editId;
@@ -36,95 +28,71 @@ function openActividadModal(id) {
 
   if (editId) {
     // Modo edición: cargar datos existentes
-    const actividades = getActividades();
-    const act = actividades.find(a => a.id === editId);
-    
-    if (act) {
-      // Cargar cada campo con los datos existentes
-      document.getElementById('a-titulo').value = act.titulo || '';
-      document.getElementById('a-fecha').value  = act.fecha || '';
-      document.getElementById('a-hora').value   = act.hora || '';
-      document.getElementById('a-lugar').value  = act.lugar || '';
-      document.getElementById('a-descripcion').value = act.descripcion || '';
-      document.querySelector('#modal-actividad h3').textContent = 'Editar Actividad';
-    }
+    getActividades().then(actividades => {
+      const act = actividades.find(a => a.id === editId);
+      if (act) {
+        document.getElementById('a-titulo').value = act.titulo || '';
+        document.getElementById('a-fecha').value  = act.fecha || '';
+        document.getElementById('a-hora').value   = act.hora || '';
+        document.getElementById('a-lugar').value  = act.lugar || '';
+        document.getElementById('a-descripcion').value = act.descripcion || '';
+        document.querySelector('#modal-actividad h3').textContent = 'Editar Actividad';
+      }
+    });
   } else {
-    // Modo creación: formulario vacío
     document.querySelector('#modal-actividad h3').textContent = 'Nueva Actividad';
   }
 
   document.getElementById('modal-actividad').classList.add('open');
 }
 
+async function saveActividad() {
+  const titulo = document.getElementById('a-titulo').value.trim();
+  const fecha  = document.getElementById('a-fecha').value;
+  const hora   = document.getElementById('a-hora').value;
+  const lugar  = document.getElementById('a-lugar').value.trim();
+  const descripcion = document.getElementById('a-descripcion').value.trim();
+  const editId = document.getElementById('a-edit-id').value;
 
-function saveActividad() {
-  const titulo = document.getElementById("a-titulo").value.trim();
-  const fecha  = document.getElementById("a-fecha").value;
-  const hora   = document.getElementById("a-hora").value;
-  const lugar  = document.getElementById("a-lugar").value.trim();
-  const descripcion = document.getElementById("a-descripcion").value.trim();
-  const editId = document.getElementById("a-edit-id").value;
-
-  // Validación básica
   if (!titulo || !fecha || !hora || !lugar) {
     alert('Por favor complete los campos obligatorios.');
     return;
   }
 
-  const actividades = getActividades();
-
-  if (editId) {
-    // Modo edición: actualizar actividad existente
-    const idx = actividades.findIndex(a => a.id === editId);
-    if (idx !== -1) {
-      actividades[idx] = {
-        id: editId,
-        titulo,
-        fecha,
-        hora,
-        lugar,
-        descripcion
-      };
-    }
-  } else {
-    // Modo creación: agregar nueva actividad con ID único
-    const newId = 'act_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    const newActividad = {
-      id: newId,
+  try {
+    const payload = {
+      id: editId || window.uid(),
       titulo,
       fecha,
       hora,
       lugar,
       descripcion
     };
-    actividades.push(newActividad);
+    const resp = await window.api.saveActividad(payload);
+    if (resp.success) {
+      await window.loadData();
+      await renderActividadesAdmin();
+      closeModal('modal-actividad');
+    } else {
+      throw new Error(resp.error || 'respuesta inesperada');
+    }
+  } catch (e) {
+    console.error('Error guardando actividad', e);
+    alert('No se pudo guardar la actividad.');
   }
-
-  localStorage.setItem("actividades", JSON.stringify(actividades));
-
-  // actualizar la tabla del área administrativa
-  if (typeof renderActividadesAdmin === "function") {
-    renderActividadesAdmin();
-  }
-
-  closeModal("modal-actividad");
 }
 
-
-/* ─── RENDERIZADO ADMINISTRATIVO ─── */
-
-function renderActividadesAdmin() {
+async function renderActividadesAdmin() {
   const tbody = document.getElementById('actividades-tbody');
   if (!tbody) return;
 
-  const list = getActividades();
+  const list = await getActividades();
   if (!list.length) {
     tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No hay actividades registradas</td></tr>';
     return;
   }
 
   tbody.innerHTML = list.map((a) => {
-    // Asegurar que cada actividad tiene un ID
     const actId = a.id || 'act_unknown';
     return `
     <tr>
@@ -148,13 +116,19 @@ function renderActividadesAdmin() {
   }).join('');
 }
 
-window.deleteActividad = function(id) {
+window.deleteActividad = async function(id) {
   if (!confirm('¿Está seguro de que desea eliminar esta actividad?')) {
-    return; // Usuario canceló
+    return;
   }
-  
-  const acts = getActividades();
-  const filtered = acts.filter(a => a.id !== id);
-  localStorage.setItem("actividades", JSON.stringify(filtered));
-  renderActividadesAdmin();
+  try {
+    const resp = await window.api.deleteActividad(id);
+    if (resp.success) {
+      await renderActividadesAdmin();
+    } else {
+      throw new Error(resp.error || 'falló eliminación');
+    }
+  } catch (e) {
+    console.error('Error borrando actividad', e);
+    alert('No se pudo eliminar la actividad.');
+  }
 };

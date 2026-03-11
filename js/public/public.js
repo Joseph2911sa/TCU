@@ -1,10 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════
-   ADECO · Portal Público Comunitario
-   Archivo: public/js/public.js
-   Descripción: Lógica completa del portal informativo público.
-                No depende del panel administrativo. Lee datos
-                del localStorage compartido y renderiza todas
-                las secciones dinámicas de la página.
+  ADECO · Portal Público Comunitario
+  Archivo: public/js/public.js
+  Descripción: Lógica completa del portal informativo público.
+           Consume la API pública para renderizar reservas,
+           actividades y finanzas.
 ════════════════════════════════════════════════════════════════ */
 
 /* ════════════════════════════════════════════
@@ -17,8 +16,11 @@ const calState = {
   month: new Date().getMonth(), // 0-indexed
 };
 
-/** Actividades de ejemplo (se muestran cuando no hay datos reales) */
-const actividades = JSON.parse(localStorage.getItem("actividades")) || [];
+const publicState = {
+  reservas: [],
+  actividades: [],
+  finanzas: [],
+};
 
 /* ════════════════════════════════════════════
    UTILIDADES
@@ -55,18 +57,26 @@ function formatMoney(n) {
   return '₡' + Number(n).toLocaleString('es-CR', { minimumFractionDigits: 0 });
 }
 
-/**
- * Lee y parsea un array almacenado en localStorage.
- * Devuelve [] si la clave no existe o el JSON es inválido.
- * @param {string} key - Clave de localStorage
- * @returns {Array}
- */
-function readFromStorage(key) {
+function getApiBase() {
+  return window.location.pathname.replace(/\/index\.html$/, '/');
+}
+
+async function publicFetch(path) {
+  const response = await fetch(getApiBase() + path, { credentials: 'same-origin' });
+  const rawText = await response.text();
+
+  let data = [];
   try {
-    return JSON.parse(localStorage.getItem(key) || '[]');
-  } catch {
-    return [];
+    data = rawText ? JSON.parse(rawText) : [];
+  } catch (error) {
+    throw new Error(rawText || 'Respuesta invalida del servidor');
   }
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Error de servidor');
+  }
+
+  return data;
 }
 
 /**
@@ -92,7 +102,7 @@ function nombreMes(monthIndex) {
  * @returns {Array}
  */
 function cargarReservas() {
-  const todas = readFromStorage('adeco_reservas');
+  const todas = publicState.reservas;
   const hoy   = new Date().toISOString().split('T')[0];
   return todas
     .filter(r => r.estado === 'Confirmada' && r.fecha >= hoy)
@@ -105,7 +115,7 @@ function cargarReservas() {
  * @returns {Set<string>} Conjunto de fechas ISO reservadas
  */
 function cargarFechasReservadas() {
-  const todas = readFromStorage('adeco_reservas');
+  const todas = publicState.reservas;
   return new Set(
     todas
       .filter(r => r.estado === 'Confirmada')
@@ -118,7 +128,7 @@ function cargarFechasReservadas() {
  * @returns {{ ingresos: number, egresos: number, balance: number, lista: Array }}
  */
 function cargarFinanzas() {
-  const lista = readFromStorage('adeco_finanzas');
+  const lista = [...publicState.finanzas];
   const ingresos = lista
     .filter(t => t.tipo === 'Ingreso')
     .reduce((s, t) => s + Number(t.monto), 0);
@@ -272,15 +282,13 @@ function calNext() {
 
 /**
  * Renderiza las tarjetas de actividades comunitarias.
- * Usa datos de muestra ya que no hay CRUD de actividades
- * en el sistema administrativo actual.
+ * Renderiza actividades desde la API.
  */
 function renderActividades() {
   const grid = document.getElementById('activities-grid');
   if (!grid) return;
 
-  // Leer actividades desde localStorage (guardadas desde el panel admin)
-  const actsData = JSON.parse(localStorage.getItem("actividades")) || [];
+  const actsData = publicState.actividades;
 
   if (!actsData.length) {
     grid.innerHTML = `
@@ -444,7 +452,7 @@ function initCalendarNav() {
  * y configura los listeners de interacción.
  */
 function init() {
-  // Datos dinámicos desde localStorage
+  // Datos dinámicos desde API
   renderHeroStats();
   renderTablaReservas();
   renderCalendario();
@@ -457,18 +465,29 @@ function init() {
   initMobileNav();
   initCalendarNav();
 
-  // Escuchar cambios de storage en otras pestañas (panel admin abierto)
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'adeco_reservas' || e.key === 'adeco_finanzas' || e.key === 'actividades') {
-      renderHeroStats();
-      renderTablaReservas();
-      renderCalendario();
-      renderActividades();
-      renderFinanzas();
-    }
-  });
+}
+
+async function loadPublicData() {
+  try {
+    const [reservas, actividades, finanzas] = await Promise.all([
+      publicFetch('api/reservas.php'),
+      publicFetch('api/actividades.php'),
+      publicFetch('api/finanzas.php'),
+    ]);
+
+    publicState.reservas = Array.isArray(reservas) ? reservas : [];
+    publicState.actividades = Array.isArray(actividades) ? actividades : [];
+    publicState.finanzas = Array.isArray(finanzas) ? finanzas : [];
+  } catch (error) {
+    console.error('Error cargando portal publico:', error);
+    publicState.reservas = [];
+    publicState.actividades = [];
+    publicState.finanzas = [];
+  }
 }
 
 // Ejecutar cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', init);
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadPublicData();
+  init();
+});

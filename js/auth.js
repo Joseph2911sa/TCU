@@ -7,12 +7,6 @@
                                         renderFinanzas, renderSalon)
 ════════════════════════════════════════════════════════════════ */
 
-/* ─── CREDENCIALES DEMO ─── */
-// En un sistema real estas credenciales se validarían contra
-// una base de datos usando contraseñas hasheadas (bcrypt, etc.).
-const VALID_USER     = 'admin';
-const VALID_PASSWORD = '1234';
-
 /* ─── LOGIN ─── */
 
 /**
@@ -20,23 +14,32 @@ const VALID_PASSWORD = '1234';
  * oculta la pantalla de login y muestra la aplicación.
  * Se llama desde el onclick del botón "Ingresar" en index.html.
  */
-function doLogin() {
-  const user = document.getElementById('login-user').value.trim();
-  const pass = document.getElementById('login-pass').value;
+async function doLogin() {
+  const usuario = document.getElementById('login-user').value.trim();
+  const password = document.getElementById('login-pass').value;
   const errorEl = document.getElementById('login-error');
 
-  if (user === VALID_USER && pass === VALID_PASSWORD) {
-    // Credenciales correctas: mostrar app
-    errorEl.style.display = 'none';
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
+  errorEl.style.display = 'none';
 
-    // Inicializar vistas con los datos persistidos
-    updateDashboard();
-    renderFinanzas();
-    renderSalon();
-  } else {
-    // Credenciales incorrectas: mostrar mensaje de error
+  try {
+    const data = await window.api.login({ usuario, password });
+
+    if (data.success) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+
+      // cargar datos desde la BD (loadData() muestra su propio toast si falla)
+      if (typeof window.loadData === 'function') {
+        window.loadData();
+      }
+    } else {
+      errorEl.style.display = 'block';
+    }
+  } catch (e) {
+    console.error('login error', e);
+    window.toast(e.message || 'No se pudo iniciar sesion.', 'error');
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
     errorEl.style.display = 'block';
   }
 }

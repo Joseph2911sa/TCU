@@ -99,7 +99,7 @@ function checkAvailability() {
  * en la misma fecha (RF6 – Control de disponibilidad).
  * Persiste en localStorage y refresca las vistas.
  */
-function saveReserva() {
+async function saveReserva() {
   const fecha     = document.getElementById('r-fecha').value;
   const nombre    = document.getElementById('r-nombre').value.trim();
   const telefono  = document.getElementById('r-telefono').value.trim();
@@ -115,7 +115,7 @@ function saveReserva() {
 
   // ── Control de disponibilidad (solo para reservas Confirmadas) ──
   if (estado === 'Confirmada') {
-    const conflicto = reservas.find(
+    const conflicto = window.reservas.find(
       r => r.fecha === fecha && r.id !== editId && r.estado === 'Confirmada'
     );
     if (conflicto) {
@@ -124,21 +124,28 @@ function saveReserva() {
     }
   }
 
-  if (editId) {
-    // Actualizar registro existente
-    const idx = reservas.findIndex(r => r.id === editId);
-    reservas[idx] = { id: editId, fecha, nombre, telefono, actividad, estado };
-    toast('Reserva actualizada.');
-  } else {
-    // Crear nuevo registro
-    reservas.push({ id: uid(), fecha, nombre, telefono, actividad, estado });
-    toast('Reserva registrada.');
+  try {
+    const resp = await window.api.saveReserva({
+      id: editId || window.uid(),
+      fecha,
+      nombre,
+      telefono,
+      actividad,
+      estado
+    });
+    if (resp.success) {
+      toast(editId ? 'Reserva actualizada.' : 'Reserva registrada.');
+      await window.loadData();
+      closeModal('modal-reserva');
+      renderSalon();
+      updateDashboard();
+    } else {
+      throw new Error(resp.error || 'Error guardando reserva');
+    }
+  } catch (err) {
+    console.error('saveReserva error', err);
+    toast('No se pudo guardar la reserva.', 'error');
   }
-
-  saveToStorage();
-  closeModal('modal-reserva');
-  renderSalon();
-  updateDashboard();
 }
 
 /* ════════════════════════════════════════════
@@ -150,14 +157,21 @@ function saveReserva() {
  *
  * @param {string} id - ID de la reserva a eliminar
  */
-function deleteReserva(id) {
+async function deleteReserva(id) {
   if (!confirm('¿Eliminar esta reserva? Esta acción no se puede deshacer.')) return;
 
-  reservas = reservas.filter(r => r.id !== id);
-  saveToStorage();
-  renderSalon();
-  updateDashboard();
-  toast('Reserva eliminada.', 'warning');
+  try {
+    const resp = await window.api.deleteReserva(id);
+    if (resp.success) {
+      await window.loadData();
+      toast('Reserva eliminada.', 'warning');
+    } else {
+      throw new Error(resp.error || 'falló eliminación');
+    }
+  } catch (err) {
+    console.error('Error borrando reserva', err);
+    toast('No se pudo borrar la reserva.', 'error');
+  }
 }
 
 /* ════════════════════════════════════════════

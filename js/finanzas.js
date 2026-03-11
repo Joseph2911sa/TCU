@@ -41,7 +41,7 @@ window.openFinanzaModal = function (id) {
    GUARDAR
 ════════════════════════════════════════════ */
 
-window.saveFinanza = function () {
+window.saveFinanza = async function () {
 
   const fecha       = document.getElementById('f-fecha').value;
   const tipo        = document.getElementById('f-tipo').value;
@@ -60,46 +60,63 @@ window.saveFinanza = function () {
     return;
   }
 
-  if (editId) {
-    const idx = window.finanzas.findIndex(f => f.id === editId);
-    if (idx !== -1) {
-      window.finanzas[idx] =
-        { id: editId, fecha, tipo, categoria, monto, descripcion };
-      window.toast('Transacción actualizada.');
-    }
-  } else {
-    window.finanzas.push({
-      id: window.uid(),
+  try {
+    const data = await window.api.saveFinanza({
+      id: editId || window.uid(),
       fecha,
       tipo,
       categoria,
       monto,
       descripcion
     });
-    window.toast('Transacción registrada.');
-  }
 
-  window.saveToStorage();
-  window.closeModal('modal-finanza');
-  window.renderFinanzas();
-  window.updateDashboard();
+    if (!data.success) {
+      throw new Error(data.error || 'Error guardando');
+    }
+
+    const loaded = await window.loadData();
+
+    if (!loaded) {
+      throw new Error('No se pudo recargar la informacion');
+    }
+
+    window.toast(
+      editId ? 'Transacción actualizada.' : 'Transacción registrada.'
+    );
+
+    window.closeModal('modal-finanza');
+    window.renderFinanzas();
+    window.updateDashboard();
+
+  } catch (err) {
+
+    console.error('saveFinanza error', err);
+    window.toast(err.message || 'No se pudo guardar la transacción.', 'error');
+
+  }
 };
 
 /* ════════════════════════════════════════════
    ELIMINAR
 ════════════════════════════════════════════ */
 
-window.deleteFinanza = function (id) {
+window.deleteFinanza = async function (id) {
 
   if (!confirm('¿Eliminar esta transacción? Esta acción no se puede deshacer.'))
     return;
 
-  window.finanzas = window.finanzas.filter(f => f.id !== id);
-
-  window.saveToStorage();
-  window.renderFinanzas();
-  window.updateDashboard();
-  window.toast('Transacción eliminada.', 'warning');
+  try {
+    const resp = await window.api.deleteFinanza(id);
+    if (resp.success) {
+      await window.loadData();
+      window.toast('Transacción eliminada.', 'warning');
+    } else {
+      throw new Error(resp.error || 'falló eliminación');
+    }
+  } catch (err) {
+    console.error('deleteFinanza error', err);
+    window.toast(err.message || 'No se pudo borrar la transacción.', 'error');
+  }
 };
 
 /* ════════════════════════════════════════════
