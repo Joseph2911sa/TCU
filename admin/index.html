@@ -77,6 +77,15 @@
         <button class="nav-item" onclick="showPage('actividades', this)">
         <span class="icon">📢</span> Actividades
 </button>
+        <button class="nav-item" onclick="showPage('reportes', this)">
+          <span class="icon">📄</span> Reportes
+        </button>
+        <button class="nav-item" onclick="showPage('contacto', this)">
+          <span class="icon">📋</span> Información
+        </button>
+        <button class="nav-item" onclick="showPage('galeria', this)">
+          <span class="icon">🖼️</span> Galería
+        </button>
       </div>
       <div class="sidebar-footer">
         <button class="btn-logout" onclick="logout()">⎋ Cerrar sesión</button>
@@ -300,6 +309,240 @@
           </table>
         </div>
       </div>
+
+      <!-- MÓDULO REPORTES -->
+      <div class="page" id="page-reportes">
+
+        <div class="page-header">
+          <h1>Reportes</h1>
+          <p>Genere informes en PDF de finanzas, reservas y actividades</p>
+        </div>
+
+        <div class="reportes-layout">
+
+          <!-- Panel izquierdo: configuración -->
+          <div class="reporte-panel">
+
+            <div class="reporte-section">
+              <h3 class="reporte-section-title">📋 Tipo de Reporte</h3>
+              <div class="form-group">
+                <label>Seleccione el módulo</label>
+                <select class="form-control" id="rep-tipo" onchange="mostrarFiltrosSegunTipo()">
+                  <option value="">— Elegir tipo —</option>
+                  <option value="finanzas">💰 Finanzas</option>
+                  <option value="reservas">📅 Reservas del Salón</option>
+                  <option value="actividades">📢 Actividades</option>
+                  <option value="general">🗂️ Reporte General</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="reporte-section">
+              <h3 class="reporte-section-title">📆 Rango de Fechas</h3>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Desde</label>
+                  <input type="date" class="form-control" id="rep-fecha-desde">
+                </div>
+                <div class="form-group">
+                  <label>Hasta</label>
+                  <input type="date" class="form-control" id="rep-fecha-hasta">
+                </div>
+              </div>
+            </div>
+
+            <div class="reporte-section" id="rep-filtros-finanzas" style="display:none;">
+              <h3 class="reporte-section-title">⚙️ Filtros de Finanzas</h3>
+              <div class="form-group">
+                <label>Tipo de movimiento</label>
+                <select class="form-control" id="rep-fin-tipo">
+                  <option value="">Todos (Ingresos y Egresos)</option>
+                  <option value="Ingreso">Solo Ingresos</option>
+                  <option value="Egreso">Solo Egresos</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="reporte-section" id="rep-filtros-reservas" style="display:none;">
+              <h3 class="reporte-section-title">⚙️ Filtros de Reservas</h3>
+              <div class="form-group">
+                <label>Estado</label>
+                <select class="form-control" id="rep-res-estado">
+                  <option value="">Todos los estados</option>
+                  <option value="Confirmada">Confirmadas</option>
+                  <option value="Pendiente">Pendientes</option>
+                  <option value="Cancelada">Canceladas</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="reporte-section" id="rep-filtros-actividades" style="display:none;">
+              <h3 class="reporte-section-title">⚙️ Filtros de Actividades</h3>
+              <p style="font-size:0.85rem;color:var(--text-light);margin-top:-0.5rem;">
+                Use el rango de fechas para filtrar actividades por período.
+              </p>
+            </div>
+
+            <div class="reporte-section">
+              <h3 class="reporte-section-title">🖨️ Contenido del PDF</h3>
+              <div class="reporte-checks">
+                <label class="check-item">
+                  <input type="checkbox" id="rep-inc-resumen" checked>
+                  <span>Resumen general</span>
+                </label>
+                <label class="check-item">
+                  <input type="checkbox" id="rep-inc-tabla" checked>
+                  <span>Tabla detallada</span>
+                </label>
+                <label class="check-item">
+                  <input type="checkbox" id="rep-inc-totales" checked>
+                  <span>Totales y estadísticas</span>
+                </label>
+                <label class="check-item">
+                  <input type="checkbox" id="rep-inc-fecha" checked>
+                  <span>Fecha de generación</span>
+                </label>
+                <label class="check-item">
+                  <input type="checkbox" id="rep-inc-nombre" checked>
+                  <span>Nombre de la asociación</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="reporte-actions">
+              <button class="btn-submit" id="btn-generar-reporte" onclick="generarReporte()">
+                📄 Generar Reporte PDF
+              </button>
+              <button class="btn-cancel" onclick="limpiarFiltrosReporte()">
+                🗑️ Limpiar Filtros
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Panel derecho: guía -->
+          <div class="reporte-guia">
+            <div class="reporte-section">
+              <h3 class="reporte-section-title">💡 ¿Cómo usar esta sección?</h3>
+              <ol class="reporte-steps">
+                <li><strong>Elija el tipo</strong> de reporte que desea generar.</li>
+                <li><strong>Establezca el rango de fechas</strong> si desea filtrar por período. Sin fechas se incluyen todos los registros.</li>
+                <li><strong>Use los filtros adicionales</strong> según el módulo elegido.</li>
+                <li><strong>Marque qué incluir</strong> en el documento PDF.</li>
+                <li>Haga clic en <strong>Generar Reporte PDF</strong> para descargar el informe.</li>
+              </ol>
+            </div>
+            <div class="reporte-section">
+              <h3 class="reporte-section-title">📁 Tipos de Reporte</h3>
+              <ul class="reporte-tipo-list">
+                <li>
+                  <span class="reporte-tipo-icon">💰</span>
+                  <div><strong>Finanzas</strong><p>Ingresos, egresos y balance con detalle de cada transacción.</p></div>
+                </li>
+                <li>
+                  <span class="reporte-tipo-icon">📅</span>
+                  <div><strong>Reservas del Salón</strong><p>Listado de reservas con responsable, fecha y estado.</p></div>
+                </li>
+                <li>
+                  <span class="reporte-tipo-icon">📢</span>
+                  <div><strong>Actividades</strong><p>Calendario de actividades con hora y lugar.</p></div>
+                </li>
+                <li>
+                  <span class="reporte-tipo-icon">🗂️</span>
+                  <div><strong>General</strong><p>Vista integral de todos los módulos en un solo documento.</p></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- MÓDULO INFORMACIÓN Y CONTACTO -->
+      <div class="page" id="page-contacto">
+        <div class="page-header">
+          <h1>Información y Contacto</h1>
+          <p>Actualice los datos de contacto y la información institucional del sitio público</p>
+        </div>
+
+        <div class="table-wrapper" style="padding:1.5rem">
+          <h3 style="margin-bottom:1rem;font-size:1rem;color:var(--text-light)">📞 Datos de Contacto</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input type="text" class="form-control" id="ct-telefono" placeholder="Ej: 7041-5191">
+            </div>
+            <div class="form-group">
+              <label>Correo electrónico</label>
+              <input type="email" class="form-control" id="ct-correo" placeholder="Ej: adi@gmail.com">
+            </div>
+            <div class="form-group full-width">
+              <label>Dirección</label>
+              <input type="text" class="form-control" id="ct-direccion" placeholder="Ej: Buenos Aires de Pocosol, San Carlos">
+            </div>
+            <div class="form-group full-width">
+              <label>Horario de atención</label>
+              <input type="text" class="form-control" id="ct-horario" placeholder="Ej: Lunes a viernes: 8:00 a.m. – 5:00 p.m.">
+            </div>
+          </div>
+
+          <h3 style="margin:1.5rem 0 1rem;font-size:1rem;color:var(--text-light)">🏛️ Información Institucional</h3>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label>Descripción general</label>
+              <textarea class="form-control" id="ct-descripcion" rows="3" placeholder="Descripción de la organización"></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label>Misión</label>
+              <textarea class="form-control" id="ct-mision" rows="3" placeholder="Misión de la asociación"></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label>Visión</label>
+              <textarea class="form-control" id="ct-vision" rows="3" placeholder="Visión de la asociación"></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label>Valores</label>
+              <textarea class="form-control" id="ct-valores" rows="2" placeholder="Ej: Transparencia, solidaridad, compromiso..."></textarea>
+            </div>
+          </div>
+
+          <div style="margin-top:1.5rem">
+            <button class="btn-submit" onclick="saveContacto()">💾 Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÓDULO GALERÍA -->
+      <div class="page" id="page-galeria">
+        <div class="page-header">
+          <h1>Galería de Imágenes</h1>
+          <p>Administre las fotos que aparecen en la galería del sitio público</p>
+        </div>
+
+        <div class="table-wrapper" style="padding:1.5rem;margin-bottom:1.5rem">
+          <h3 style="margin-bottom:1rem;font-size:1rem;color:var(--text-light)">⬆️ Subir nueva imagen</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Imagen (JPG, PNG, WEBP — máx. 5 MB)</label>
+              <input type="file" class="form-control" id="galeria-file-input" accept="image/*">
+            </div>
+            <div class="form-group">
+              <label>Descripción (opcional)</label>
+              <input type="text" class="form-control" id="galeria-caption-new" placeholder="Ej: Salón comunal">
+            </div>
+          </div>
+          <div style="margin-top:1rem">
+            <button class="btn-submit" id="btn-upload-img" onclick="uploadGaleriaImage()">⬆️ Subir imagen</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper" style="padding:1.5rem">
+          <h3 style="margin-bottom:1rem;font-size:1rem;color:var(--text-light)">🖼️ Imágenes actuales</h3>
+          <div id="galeria-admin-grid" class="galeria-admin-grid">
+            <p class="empty-state">Cargando galería...</p>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 
@@ -472,5 +715,10 @@
   <script src="../js/reservas.js?v=20260310-7"></script>
   <script src="../js/actividades.js?v=20260310-7"></script>
   <script src="../js/resumen.js?v=20260310-7"></script>
+  <script src="../js/contacto.js?v=20260421-1"></script>
+  <script src="../js/galeria.js?v=20260421-1"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="../js/reportes.js?v=20260409-1"></script>
 </body>
 </html>

@@ -133,6 +133,52 @@ if (!tableExists($conn, 'actividades')) {
             "ALTER TABLE actividades ADD COLUMN activo TINYINT NOT NULL DEFAULT 1");
 }
 
+// ── Tabla contacto ──────────────────────────────────────────────
+if (!tableExists($conn, 'contacto')) {
+    $results[] = runSQL($conn, 'crear tabla contacto', "
+        CREATE TABLE contacto (
+            id          VARCHAR(50)  NOT NULL PRIMARY KEY,
+            telefono    VARCHAR(50)  NOT NULL DEFAULT '',
+            correo      VARCHAR(100) NOT NULL DEFAULT '',
+            direccion   VARCHAR(200) NOT NULL DEFAULT '',
+            horario     VARCHAR(200) NOT NULL DEFAULT '',
+            descripcion TEXT,
+            mision      TEXT,
+            vision      TEXT,
+            valores     TEXT
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+} else {
+    $results[] = "ℹ️ tabla contacto ya existe";
+    $cols = ['descripcion','mision','vision','valores','horario'];
+    foreach ($cols as $col) {
+        if (!columnExists($conn, 'contacto', $col))
+            $results[] = runSQL($conn, "agregar contacto.$col",
+                "ALTER TABLE contacto ADD COLUMN $col TEXT NULL");
+    }
+}
+
+// ── Tabla galeria ────────────────────────────────────────────────
+if (!tableExists($conn, 'galeria')) {
+    $results[] = runSQL($conn, 'crear tabla galeria', "
+        CREATE TABLE galeria (
+            id      VARCHAR(50)  NOT NULL PRIMARY KEY,
+            ruta    VARCHAR(255) NOT NULL,
+            caption VARCHAR(200) NOT NULL DEFAULT '',
+            orden   INT          NOT NULL DEFAULT 0,
+            activo  TINYINT      NOT NULL DEFAULT 1
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+} else {
+    $results[] = "ℹ️ tabla galeria ya existe";
+    if (!columnExists($conn, 'galeria', 'activo'))
+        $results[] = runSQL($conn, 'agregar galeria.activo',
+            "ALTER TABLE galeria ADD COLUMN activo TINYINT NOT NULL DEFAULT 1");
+    if (!columnExists($conn, 'galeria', 'orden'))
+        $results[] = runSQL($conn, 'agregar galeria.orden',
+            "ALTER TABLE galeria ADD COLUMN orden INT NOT NULL DEFAULT 0");
+}
+
 // ── Verificación final ──────────────────────────────────────────
 $tables = [];
 $res = $conn->query("SHOW TABLES");

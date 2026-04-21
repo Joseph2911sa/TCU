@@ -458,6 +458,8 @@ function init() {
   renderCalendario();
   renderActividades();
   renderFinanzas();
+  renderGaleria();
+  renderContacto();
 
   // UI / interacción
   setFooterYear();
@@ -469,21 +471,90 @@ function init() {
 
 async function loadPublicData() {
   try {
-    const [reservas, actividades, finanzas] = await Promise.all([
+    const [reservas, actividades, finanzas, galeria, contacto] = await Promise.all([
       publicFetch('api/reservas.php'),
       publicFetch('api/actividades.php'),
       publicFetch('api/finanzas.php'),
+      publicFetch('api/galeria.php').catch(() => []),
+      publicFetch('api/contacto.php').catch(() => null),
     ]);
 
-    publicState.reservas = Array.isArray(reservas) ? reservas : [];
+    publicState.reservas    = Array.isArray(reservas)    ? reservas    : [];
     publicState.actividades = Array.isArray(actividades) ? actividades : [];
-    publicState.finanzas = Array.isArray(finanzas) ? finanzas : [];
+    publicState.finanzas    = Array.isArray(finanzas)    ? finanzas    : [];
+    publicState.galeria     = Array.isArray(galeria)     ? galeria     : [];
+    publicState.contacto    = (contacto && contacto.success) ? contacto    : null;
   } catch (error) {
     console.error('Error cargando portal publico:', error);
-    publicState.reservas = [];
+    publicState.reservas    = [];
     publicState.actividades = [];
-    publicState.finanzas = [];
+    publicState.finanzas    = [];
+    publicState.galeria     = null; // null = mostrar fotos originales como fallback
+    publicState.contacto    = null;
   }
+}
+
+/* ════════════════════════════════════════════
+   GALERÍA DINÁMICA
+════════════════════════════════════════════ */
+
+function renderGaleria() {
+  const grid = document.getElementById('gallery-grid');
+  if (!grid) return;
+
+  const items = publicState.galeria;
+
+  // Si no hay nada en la API o falló, mostrar las imágenes originales como fallback
+  if (!items || !items.length) {
+    const fallback = [
+      { ruta: 'assets/img/galeria/salon.jpg',   caption: 'Salón comunal' },
+      { ruta: 'assets/img/galeria/plaza.jpg',   caption: 'Plaza de deportes' },
+      { ruta: 'assets/img/galeria/pueblo.jpg',  caption: 'Vista de la comunidad', tall: true },
+      { ruta: 'assets/img/galeria/escuela.jpg', caption: 'Escuela' },
+      { ruta: 'assets/img/galeria/iglesia.jpg', caption: 'Iglesia' },
+    ];
+    grid.innerHTML = fallback.map((f, i) => `
+      <div class="gallery-item${f.tall ? ' gallery-item-tall' : ''}">
+        <img src="${f.ruta}" alt="${f.caption}">
+        <div class="gallery-caption">${f.caption}</div>
+      </div>
+    `).join('');
+    return;
+  }
+
+  grid.innerHTML = items.map((item, i) => `
+    <div class="gallery-item${i === 2 ? ' gallery-item-tall' : ''}">
+      <img src="${item.ruta}" alt="${item.caption || ''}" onerror="this.parentElement.style.display='none'">
+      ${item.caption ? `<div class="gallery-caption">${item.caption}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════════════════
+   CONTACTO DINÁMICO
+════════════════════════════════════════════ */
+
+function renderContacto() {
+  const ct = publicState.contacto;
+  if (!ct || !ct.success) return; // si no hay datos en BD se queda el texto por defecto del HTML
+
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val) el.textContent = val;
+  };
+
+  set('pub-ct-telefono',   ct.telefono);
+  set('pub-ct-correo',     ct.correo);
+  set('pub-ct-direccion',  ct.direccion);
+  set('pub-ct-horario',    ct.horario);
+  set('pub-ct-descripcion',ct.descripcion);
+  set('pub-ct-mision',     ct.mision);
+  set('pub-ct-vision',     ct.vision);
+  set('pub-ct-valores',    ct.valores);
+
+  // Footer
+  set('footer-ct-telefono', ct.telefono);
+  set('footer-ct-correo',   ct.correo);
 }
 
 // Ejecutar cuando el DOM esté listo

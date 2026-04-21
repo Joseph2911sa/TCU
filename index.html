@@ -100,7 +100,7 @@
       </div>
       <div class="about-grid">
         <div class="about-main">
-          <p class="about-intro">
+          <p class="about-intro" id="pub-ct-descripcion">
             La Asociación de Desarrollo Integral es una organización sin fines de lucro
             constituida al amparo de la Ley 218 de Costa Rica, cuya finalidad es promover
             el bienestar y el progreso de todos los habitantes de la comunidad.
@@ -115,21 +115,21 @@
           <div class="about-card">
             <div class="about-card-icon">🎯</div>
             <h3>Misión</h3>
-            <p>Promover el desarrollo integral de la comunidad mediante la gestión transparente
+            <p id="pub-ct-mision">Promover el desarrollo integral de la comunidad mediante la gestión transparente
                de recursos, la organización de actividades y la representación de los intereses
                de todos sus habitantes.</p>
           </div>
           <div class="about-card">
             <div class="about-card-icon">🔭</div>
             <h3>Visión</h3>
-            <p>Ser una asociación modelo en Costa Rica, reconocida por su transparencia,
+            <p id="pub-ct-vision">Ser una asociación modelo en Costa Rica, reconocida por su transparencia,
                participación ciudadana y capacidad de transformar positivamente el entorno
                comunitario con proyectos sostenibles.</p>
           </div>
           <div class="about-card">
             <div class="about-card-icon">⚖️</div>
             <h3>Valores</h3>
-            <p>Transparencia, solidaridad, participación democrática, responsabilidad social
+            <p id="pub-ct-valores">Transparencia, solidaridad, participación democrática, responsabilidad social
                y compromiso con el desarrollo sostenible de nuestra comunidad.</p>
           </div>
         </div>
@@ -309,35 +309,8 @@
         <h2 class="section-title">Galería de Imágenes</h2>
       </div>
       <div class="gallery-grid" id="gallery-grid">
-
-  <div class="gallery-item">
-    <img src="../assets/img/galeria/salon.jpg" alt="Salón comunal">
-    <div class="gallery-caption">Salón comunal</div>
-  </div>
-
-  <div class="gallery-item">
-    <img src="../assets/img/galeria/plaza.jpg" alt="Plaza de deportes">
-    <div class="gallery-caption">Plaza de deportes</div>
-  </div>
-
-  <div class="gallery-item gallery-item-tall">
-    <img src="../assets/img/galeria/pueblo.jpg" alt="Vista del pueblo">
-    <div class="gallery-caption">Vista de la comunidad</div>
-  </div>
-
-  <div class="gallery-item">
-    <img src="../assets/img/galeria/escuela.jpg" alt="Escuela">
-    <div class="gallery-caption">Escuela</div>
-  </div>
-
-  <div class="gallery-item">
-    <img src="../assets/img/galeria/iglesia.jpg" alt="Iglesia">
-    <div class="gallery-caption">Iglesia</div>
-  </div>
-
-  
-
-</div>
+        <!-- Cargado dinámicamente desde api/galeria.php -->
+      </div>
     </div>
   </section>
 
@@ -356,28 +329,28 @@
             <div class="contact-icon">📞</div>
             <div>
               <strong>Teléfono</strong>
-              <p>7041-5191</p>
+              <p id="pub-ct-telefono">7041-5191</p>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon">✉️</div>
             <div>
               <strong>Correo electrónico</strong>
-              <p>adibuenosairesdepocosol@gmail.com</p>
+              <p id="pub-ct-correo">adibuenosairesdepocosol@gmail.com</p>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon">📍</div>
             <div>
               <strong>Dirección</strong>
-              <p>Buenos Aires de Pocosol, San Carlos, Alajuela.</p>
+              <p id="pub-ct-direccion">Buenos Aires de Pocosol, San Carlos, Alajuela.</p>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon">🕐</div>
             <div>
               <strong>Horario de atención</strong>
-              <p>Lunes a viernes: 8:00 a.m. – 5:00 p.m.</p>
+              <p id="pub-ct-horario">Lunes a viernes: 8:00 a.m. – 5:00 p.m.</p>
             </div>
           </div>
         </div>
@@ -422,8 +395,8 @@
         </div>
         <div class="footer-contact">
           <h4>Contacto rápido</h4>
-          <p>📞 7041-5191</p>
-          <p>✉️ adibuenosairesdepocosol@gmail.com</p>
+          <p>📞 <span id="footer-ct-telefono">7041-5191</span></p>
+          <p>✉️ <span id="footer-ct-correo">adibuenosairesdepocosol@gmail.com</span></p>
         </div>
       </div>
       <div class="footer-bottom">

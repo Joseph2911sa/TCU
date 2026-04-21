@@ -32,6 +32,10 @@ window.showPage = function (name, btn) {
   } else if (name === 'actividades' && typeof window.renderActividadesAdmin === "function") {
     // reload tabla administrativa cuando se navega a la pestaña
     window.renderActividadesAdmin();
+  } else if (name === 'contacto' && typeof window.loadContacto === "function") {
+    window.loadContacto();
+  } else if (name === 'galeria' && typeof window.loadGaleria === "function") {
+    window.loadGaleria();
   }
 };
 
